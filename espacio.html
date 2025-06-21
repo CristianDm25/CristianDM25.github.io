@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espacio con Agujero Negro</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background-color: #000;
+            overflow: hidden;
+            cursor: crosshair;
+        }
+
+        /* Texto llamativo */
+        .llamativo {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            font-size: 24px;
+            text-shadow: 0 0 10px #00ffff, 0 0 20px #0088ff;
+            z-index: 10;
+            animation: pulse-text 2s infinite alternate;
+        }
+
+        @keyframes pulse-text {
+            from { opacity: 0.7; text-shadow: 0 0 10px #00ffff, 0 0 20px #0088ff; }
+            to { opacity: 1; text-shadow: 0 0 15px #00ffff, 0 0 30px #0088ff, 0 0 40px #0044ff; }
+        }
+
+        /* Estrellas */
+        .star {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0;
+            width: 2px;
+            height: 2px;
+            animation: twinkle 2s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { background: white; opacity: 1; }
+            60%, 100% { background: yellow; opacity: 0; }
+        }
+
+        /* Meteoritos */
+        .meteorito {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(to right, #ff5e00, #ffbb00);
+            border-radius: 50%;
+            filter: drop-shadow(0 0 5px #ff5e00);
+            transform: rotate(45deg);
+            z-index: 2;
+        }
+
+        /* Explosiones */
+        .explosion {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, #ff3300, #ff9900, transparent 70%);
+            border-radius: 50%;
+            animation: explotar 0.8s ease-out forwards;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        @keyframes explotar {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(30); opacity: 0; }
+        }
+
+        /* Ojo Negro (Agujero Negro) */
+        #blackHole {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        /* Animación de pulso para el fondo */
+        .element {
+            width: 100%;
+            height: 100%;
+            animation: pulse 15s infinite;
+        }
+
+        @keyframes pulse {
+            0% { background-color: grey; }
+            100% { background-color: #000000; }
+        }
+
+        /* Estilos para los SVGs existentes */
+        #glow, #globeMap {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+        #glow { height: 215px; }
+        #globeMap { height: 200px; }
+    </style>
+</head>
+<body bgcolor="black">
+    <div class="element"></div>
+    
+    <!-- Texto llamativo agregado -->
+    <div class="llamativo">¡Haz click! Verás que no es el fin, solo una singularidad de posibilidades</div>
+    
+    <!-- SVGs existentes -->
+    <svg viewBox="-90 -90 180 180" id="glow">
+        <!-- ... (mantén tu código SVG existente) ... -->
+    </svg>
+    <svg viewBox="-90 -90 180 180" xmlns="http://www.w3.org/2000/svg" id="globeMap">
+        <!-- ... (mantén tu código SVG existente) ... -->
+    </svg>
+
+    <!-- Ojo Negro / Agujero Negro -->
+    <svg id="blackHole" viewBox="0 0 200 200">
+        <defs>
+            <radialGradient id="blackHoleGradient" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#000000"/>
+                <stop offset="70%" stop-color="#220066"/>
+                <stop offset="100%" stop-color="#4400ff"/>
+            </radialGradient>
+            <filter id="glowEffect" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="5" result="blur"/>
+                <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+            </filter>
+        </defs>
+        <circle cx="100" cy="100" r="80" fill="url(#blackHoleGradient)" filter="url(#glowEffect)"/>
+        <circle cx="100" cy="100" r="40" fill="#000" filter="url(#glowEffect)"/>
+    </svg>
+
+    <script>
+        // Crear estrellas
+        const numberOfStars = 500;
+        for (let i = 0; i < numberOfStars; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.top = Math.random() * window.innerHeight + 'px';
+            star.style.left = Math.random() * window.innerWidth + 'px';
+            star.style.width = star.style.height = (Math.random() * 2 + 1) + 'px';
+            star.style.animationDuration = (Math.random() * 2 + 1) + 's';
+            document.body.appendChild(star);
+        }
+
+        // Sistema de meteoritos
+        const meteoritos = new Set();
+        const blackHole = {
+            x: window.innerWidth / 2,
+            y: window.innerHeight / 2,
+            gravity: 0.02,
+            radius: 80
+        };
+
+        document.addEventListener('click', (e) => {
+            if (meteoritos.size < 50) {
+                crearMeteorito(e.clientX, e.clientY);
+            }
+        });
+
+        function crearMeteorito(x, y) {
+            const meteorito = document.createElement('div');
+            meteorito.className = 'meteorito';
+            meteorito.style.left = x + 'px';
+            meteorito.style.top = y + 'px';
+            document.body.appendChild(meteorito);
+
+            const meteoritoObj = {
+                element: meteorito,
+                x: x,
+                y: y,
+                width: 30,
+                height: 30,
+                velocidadX: (Math.random() - 0.5) * 4,
+                velocidadY: (Math.random() - 0.5) * 4
+            };
+
+            meteoritos.add(meteoritoObj);
+
+            meteorito.addEventListener('animationend', () => {
+                meteorito.remove();
+                meteoritos.delete(meteoritoObj);
+            });
+        }
+
+        function crearExplosion(x, y) {
+            const explosion = document.createElement('div');
+            explosion.className = 'explosion';
+            explosion.style.left = x + 'px';
+            explosion.style.top = y + 'px';
+            document.body.appendChild(explosion);
+            explosion.addEventListener('animationend', () => explosion.remove());
+        }
+
+        function verificarColisiones() {
+            const meteoritosArray = Array.from(meteoritos);
+            
+            for (let i = 0; i < meteoritosArray.length; i++) {
+                const m1 = meteoritosArray[i];
+                if (!document.body.contains(m1.element)) continue;
+
+                // Atracción gravitacional hacia el agujero negro
+                const dx = blackHole.x - m1.x;
+                const dy = blackHole.y - m1.y;
+                const distancia = Math.sqrt(dx * dx + dy * dy);
+
+                if (distancia < 500) { // Radio de atracción
+                    const fuerza = blackHole.gravity * (500 - distancia) / 500;
+                    m1.velocidadX += dx * fuerza * 0.1;
+                    m1.velocidadY += dy * fuerza * 0.1;
+                }
+
+                // Colisiones entre meteoritos
+                for (let j = i + 1; j < meteoritosArray.length; j++) {
+                    const m2 = meteoritosArray[j];
+                    if (!document.body.contains(m2.element)) continue;
+
+                    if (m1.x < m2.x + m2.width &&
+                        m1.x + m1.width > m2.x &&
+                        m1.y < m2.y + m2.height &&
+                        m1.y + m1.height > m2.y) {
+                        
+                        // Crear explosión en el punto medio
+                        crearExplosion((m1.x + m2.x) / 2, (m1.y + m2.y) / 2);
+                        
+                        // Eliminar meteoritos
+                        m1.element.remove();
+                        m2.element.remove();
+                        meteoritos.delete(m1);
+                        meteoritos.delete(m2);
+                        break;
+                    }
+                }
+
+                // Actualizar posición
+                m1.x += m1.velocidadX;
+                m1.y += m1.velocidadY;
+                m1.element.style.left = m1.x + 'px';
+                m1.element.style.top = m1.y + 'px';
+
+                // Absorción por el agujero negro
+                if (distancia < blackHole.radius) {
+                    crearExplosion(m1.x, m1.y);
+                    m1.element.remove();
+                    meteoritos.delete(m1);
+                }
+            }
+
+            requestAnimationFrame(verificarColisiones);
+        }
+
+        verificarColisiones();
+    </script>
+</body>
+</html>
