@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espacio Musical</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background-color: #000;
+            overflow: hidden;
+            cursor: crosshair;
+        }
+
+        /* Texto llamativo */
+        .llamativo {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: red; /* Cambiado a rojo */
+            font-family: 'Arial', sans-serif;
+            font-size: 24px;
+            text-shadow: 0 0 10px #ff0000, 0 0 20px #880000; /* Sombras rojas */
+            z-index: 10;
+            animation: pulse-text 2s infinite alternate;
+        }
+
+        @keyframes pulse-text {
+            from { opacity: 0.7; text-shadow: 0 0 10px #ff0000, 0 0 20px #880000; }
+            to { opacity: 1; text-shadow: 0 0 15px #ff0000, 0 0 30px #880000, 0 0 40px #440000; }
+        }
+
+        /* Notas musicales (estrellas) */
+        .musical-note {
+            position: absolute;
+            color: red; /* Cambiado a rojo */
+            font-size: 16px;
+            opacity: 0;
+            animation: twinkle 2s infinite;
+            z-index: 1;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; text-shadow: 0 0 5px red; }
+            50% { opacity: 0.3; text-shadow: 0 0 10px #ff6600; }
+        }
+
+        /* Notas musicales (meteoritos) */
+        .meteorito {
+            position: absolute;
+            color: red; /* Cambiado a rojo */
+            font-size: 30px;
+            filter: drop-shadow(0 0 5px currentColor);
+            z-index: 2;
+        }
+
+        /* Explosiones */
+        .explosion {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, #ff3300, #ff9900, transparent 70%);
+            border-radius: 50%;
+            animation: explotar 0.8s ease-out forwards;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        @keyframes explotar {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(30); opacity: 0; }
+        }
+
+        /* Partitura */
+        .partitura {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            z-index: 4;
+        }
+
+        .nota-partitura {
+            color: red; /* Cambiado a rojo */
+            font-size: 60px;
+            text-shadow: 0 0 10px #ff0000; /* Sombra roja */
+            animation: float 3s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .nota-partitura:nth-child(1) { animation-delay: 0s; }
+        .nota-partitura:nth-child(2) { animation-delay: 0.5s; }
+        .nota-partitura:nth-child(3) { animation-delay: 1s; }
+        .nota-partitura:nth-child(4) { animation-delay: 1.5s; }
+        .nota-partitura:nth-child(5) { animation-delay: 2s; }
+    </style>
+</head>
+<body>
+    <!-- Texto llamativo agregado -->
+    <div class="llamativo">¡Haz click! Verás notas musicales bailando en el espacio</div>
+    
+    <!-- Partitura con 2 negras, 2 blancas y 1 redonda -->
+    <div class="partitura">
+        <div class="nota-partitura">♩</div> <!-- Negra -->
+        <div class="nota-partitura">♩</div> <!-- Negra -->
+        <div class="nota-partitura">♫</div> <!-- Blanca -->
+        <div class="nota-partitura">♫</div> <!-- Blanca -->
+        <div class="nota-partitura">𝅝</div> <!-- Redonda -->
+    </div>
+
+    <script>
+        // Notas musicales para las estrellas
+        const musicalNotes = ['♪', '♫', '♩', '♬', '♭', '♮', '♯'];
+        
+        // Crear estrellas musicales
+        const numberOfStars = 200;
+        for (let i = 0; i < numberOfStars; i++) {
+            const note = document.createElement('div');
+            note.className = 'musical-note';
+            note.textContent = musicalNotes[Math.floor(Math.random() * musicalNotes.length)];
+            note.style.top = Math.random() * window.innerHeight + 'px';
+            note.style.left = Math.random() * window.innerWidth + 'px';
+            note.style.fontSize = (Math.random() * 16 + 8) + 'px';
+            note.style.animationDuration = (Math.random() * 3 + 1) + 's';
+            note.style.animationDelay = (Math.random() * 2) + 's';
+            document.body.appendChild(note);
+        }
+
+        // Sistema de meteoritos musicales
+        const meteoritos = new Set();
+
+        // Notas de la escala musical (do re mi fa sol la si)
+        const scaleNotes = ['♪', '♫', '♩', '♬', '♭', '♮', '♯'];
+        const noteColors = ['#ff0000', '#cc0000', '#990000', '#ff3333', '#ff6666', '#ff9999', '#ffcccc']; // Todos tonos de rojo
+
+        // Sonidos de piano
+        const pianoNotes = [
+            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3',
+            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3',
+            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3'
+        ];
+
+        // Precargar sonidos
+        const audioElements = pianoNotes.map(url => {
+            const audio = new Audio(url);
+            audio.preload = 'auto';
+            return audio;
+        });
+
+        document.addEventListener('click', (e) => {
+            if (meteoritos.size < 50) {
+                crearMeteorito(e.clientX, e.clientY);
+                // Reproducir sonido de piano aleatorio
+                const randomNote = Math.floor(Math.random() * audioElements.length);
+                audioElements[randomNote].currentTime = 0;
+                audioElements[randomNote].play();
+            }
+        });
+
+        function crearMeteorito(x, y) {
+            const noteIndex = Math.floor(Math.random() * scaleNotes.length);
+            const meteorito = document.createElement('div');
+            meteorito.className = 'meteorito';
+            meteorito.textContent = scaleNotes[noteIndex];
+            meteorito.style.color = noteColors[noteIndex];
+            meteorito.style.left = x + 'px';
+            meteorito.style.top = y + 'px';
+            document.body.appendChild(meteorito);
+
+            const meteoritoObj = {
+                element: meteorito,
+                x: x,
+                y: y,
+                width: 30,
+                height: 30,
+                velocidadX: (Math.random() - 0.5) * 4,
+                velocidadY: (Math.random() - 0.5) * 4
+            };
+
+            meteoritos.add(meteoritoObj);
+        }
+
+        function crearExplosion(x, y) {
+            const explosion = document.createElement('div');
+            explosion.className = 'explosion';
+            explosion.style.left = x + 'px';
+            explosion.style.top = y + 'px';
+            document.body.appendChild(explosion);
+            explosion.addEventListener('animationend', () => explosion.remove());
+        }
+
+        function verificarColisiones() {
+            const meteoritosArray = Array.from(meteoritos);
+            
+            for (let i = 0; i < meteoritosArray.length; i++) {
+                const m1 = meteoritosArray[i];
+                if (!document.body.contains(m1.element)) continue;
+
+                // Repulsión entre notas
+                for (let j = 0; j < meteoritosArray.length; j++) {
+                    if (i === j) continue;
+                    
+                    const m2 = meteoritosArray[j];
+                    if (!document.body.contains(m2.element)) continue;
+
+                    const dx = m2.x - m1.x;
+                    const dy = m2.y - m1.y;
+                    const distancia = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distancia < 100) { // Radio de repulsión
+                        const fuerza = 0.1 * (100 - distancia) / 100;
+                        m1.velocidadX -= dx * fuerza * 0.1;
+                        m1.velocidadY -= dy * fuerza * 0.1;
+                    }
+                }
+
+                // Colisiones entre notas
+                for (let j = i + 1; j < meteoritosArray.length; j++) {
+                    const m2 = meteoritosArray[j];
+                    if (!document.body.contains(m2.element)) continue;
+
+                    if (m1.x < m2.x + m2.width &&
+                        m1.x + m1.width > m2.x &&
+                        m1.y < m2.y + m2.height &&
+                        m1.y + m1.height > m2.y) {
+                        
+                        // Crear explosión en el punto medio
+                        crearExplosion((m1.x + m2.x) / 2, (m1.y + m2.y) / 2);
+                        
+                        // Eliminar notas
+                        m1.element.remove();
+                        m2.element.remove();
+                        meteoritos.delete(m1);
+                        meteoritos.delete(m2);
+                        break;
+                    }
+                }
+
+                // Rebote en los bordes
+                if (m1.x <= 0 || m1.x >= window.innerWidth - m1.width) {
+                    m1.velocidadX *= -0.8;
+                }
+                if (m1.y <= 0 || m1.y >= window.innerHeight - m1.height) {
+                    m1.velocidadY *= -0.8;
+                }
+
+                // Actualizar posición
+                m1.x += m1.velocidadX;
+                m1.y += m1.velocidadY;
+                m1.element.style.left = m1.x + 'px';
+                m1.element.style.top = m1.y + 'px';
+            }
+
+            requestAnimationFrame(verificarColisiones);
+        }
+
+        verificarColisiones();
+    </script>
+</body>
+</html>
