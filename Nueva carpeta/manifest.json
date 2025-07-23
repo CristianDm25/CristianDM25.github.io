@@ -1,0 +1,19 @@
+{
+    "name": "Oaxaqueño App",
+    "short_name": "Oaxaqueño app",
+    "star_url": "index.html",
+    "display": "standalone",
+    "background_color": "#3A3A3A",
+    "theme_color": "#4C3552",
+    "icons": [{
+            "src": "faceboock.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "2331.jpg",
+            "sizes": "512x192",
+            "type": "image/png"
+        }
+    ]
+}
